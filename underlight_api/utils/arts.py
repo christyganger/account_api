@@ -1,14 +1,16 @@
+from underlight_api import utils
+import underlight_api
 #0=Dreamsoul 1=Willpower 2=Insight 3=Resilience 4=Lucidity 5=NoStat
-STATS = [
+STATS = (
     "DREAMSOUL",
     "WILLPOWER",
     "INSIGHT",
     "RESILIENCE",
     "LUCIDITY",
     "NOSTAT"
-]
+)
 
-ARTS_TABLE = [
+ARTS_TABLE = (
     ("Join_Party", 0),
     ("Gatekeeper", 1),
     ("Dreamseer", 2),
@@ -160,4 +162,39 @@ ARTS_TABLE = [
     ("Sprint", 1),
     ("Enfeeblement", 4),
     ("Dreamwise_Evoke", 5),   
-]
+)
+
+def id_from_name(skill):
+    return ARTS_TABLE.index[skill]
+	
+def check_player_skill_exists(self, player_id, skill, skill_level):
+    cxn = self.connect(db =' ul_player')
+    stmt = 'SELECT count(* )FROM Skill where player_id = %s'
+    cursor = cxn.cursor(cursor_class=MySQLCursorPrepared)
+    cursor.execute(stmt,(player_id))
+    countarts = cursor.rowcount
+    return countarts
+
+def add_player_skill(self, player_id, skills, skill_level):
+    cxn = self.connect(db = 'ul_player')
+    stmt = 'INSERT INTO Skill (player_id, skill skill_level) VALUES'+\
+    '(%s, %s, %s)'
+    cursor = cxn.cursor(cursor_class=MySQLCursorPrepared)
+    skillset = (id_from_name("Trail"), id_from_name("Meditation"), focus[0], focus[1], id_from_name("Know"), id_from_name("Locate_Avatar"), id_from_name("Show_Talisman"), id_from_name("Random"))
+    for skill in skillset:
+        cursor.execute(stmt,(player_id, skill, skill_level))
+    id = cursor.lastrowid
+    cxn.commit()
+    cursor.close()
+    return id
+
+focusselect=(GateKeeper / SoulMaster / FateSender / DreamSeer) 
+focus = focusselect
+
+GateKeeperT = ("Gatekeeper","Gatesmasher")
+SoulMasterT = ("Soulmaster","Soulreaper")
+FateSenderT = ("Fatesender","FateSlayer")
+DreamSeerT = ("Dreamseer","Dreamblade")
+
+if check_player_skill_exists(self, player_id, focus[1], 1) == 0: 
+    add_player_skill(player_id, focus, 1)
